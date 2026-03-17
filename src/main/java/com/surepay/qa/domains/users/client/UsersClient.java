@@ -12,11 +12,14 @@ import java.util.Map;
 
 public class UsersClient extends BaseClient {
 
-    public User getSingleUsersByUsername(String username) {
+    public List<User> getUsersByUsername(String username) {
         Response response = get(ApiPaths.USERS, Map.of("username", username));
         UserAssertions.assertStatusCode(response, 200);
+        return JsonUtils.fromJsonList(response.asString(), User.class);
+    }
 
-        List<User> users = JsonUtils.fromJsonList(response.asString(), User.class);
+    public User getSingleUsersByUsername(String username) {
+        List<User> users = getUsersByUsername(username);
         UserAssertions.assertUserCount(users, 1);
 
         User user = users.getFirst();

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public final class PostsAssertions {
 
-    public PostsAssertions() {
+    private PostsAssertions() {
     }
 
     public static void assertStatusCode(Response response, int expectedStatusCode) {
@@ -34,6 +34,12 @@ public final class PostsAssertions {
         assertThat(postIds)
                 .withFailMessage("Expected posts to contain unique ids but found duplicates in %s", postIds)
                 .doesNotHaveDuplicates();
+    }
+
+    public static void assertPostsBelongToUser(List<Post> posts, int expectedUserId) {
+        assertThat(posts)
+                .withFailMessage("Expected all posts to belong to user id %s but found %s", expectedUserId, posts)
+                .allMatch(post -> post.getUserId() != null && post.getUserId() == expectedUserId);
     }
 
 }

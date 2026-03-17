@@ -8,9 +8,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CommentsAssertions {
+public final class CommentsAssertions {
 
-    public CommentsAssertions() {
+    private CommentsAssertions() {
     }
 
     public static void assertStatusCode(Response response, int expectedStatusCode) {
@@ -35,5 +35,11 @@ public class CommentsAssertions {
         assertThat(comment.getName().contains("a") || comment.getName().contains("e"))
                 .withFailMessage("Invalid name format %s",  comment)
                 .isTrue();
+    }
+
+    public static void assertCommentsBelongToPost(List<Comment> comments, int expectedPostId) {
+        assertThat(comments)
+                .withFailMessage("Expected all comments to belong to post id %s but found %s", expectedPostId, comments)
+                .allMatch(comment -> comment.getPostId() == expectedPostId);
     }
 }

@@ -99,6 +99,34 @@ The existing automated scenario performs these steps:
 
 The scenario is tagged with both `smoke` and `regression`.
 
+## Test Coverage
+
+The suite currently covers both workflow and negative validation scenarios.
+
+Covered workflow scenarios:
+
+- Find the user `Delphine` exactly once.
+- Return no users for an unknown username.
+- Fetch posts for `Delphine` and verify they are not empty.
+- Verify fetched posts have unique ids.
+- Verify fetched posts belong to the requested user.
+- Fetch comments for each post and verify the comment list is not empty.
+- Verify each fetched comment belongs to the requested post.
+- Verify comment emails are in a valid format.
+
+Covered negative scenarios:
+
+- Expected single-user lookup fails when zero users are found.
+- Expected single-user lookup fails when multiple users are found.
+- Username validation fails when the returned username is different.
+- Post validation fails when duplicate post ids are present.
+- Post validation fails when posts belong to the wrong user.
+- Post validation fails when the post list is empty.
+- Comment validation fails when email is `null`.
+- Comment validation fails when email is blank.
+- Comment validation fails when email format is invalid.
+- Comment validation fails when comments belong to the wrong post.
+
 ## Assertions and Framework Design
 
 The framework is organized by domain:
