@@ -1,42 +1,35 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:java:.,tool:gradle:
 version: 2.1
+
 jobs:
-  test-java:
+  build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
+    working_directory: ~/project
     steps:
       - checkout
-      - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+
       - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          keys:
+            - gradle-v1-{{ checksum "build.gradle.kts" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - gradle-v1-
+
       - run:
-          command: ./gradlew check
-      - store_test_results:
-          path: build/test-results
+          name: Build and run tests against qa
+          command: ./gradlew clean build smokeTest regressionTest -Denv=qa --no-daemon
+
       - save_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          key: gradle-v1-{{ checksum "build.gradle.kts" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
           paths:
             - ~/.gradle/caches
+            - ~/.gradle/wrapper
+
+      - store_test_results:
+          path: build/test-results
+
       - store_artifacts:
           path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+
 workflows:
-  build-and-test:
+  test-on-push:
     jobs:
-      - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - build-and-test
