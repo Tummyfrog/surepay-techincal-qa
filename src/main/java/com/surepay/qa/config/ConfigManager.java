@@ -11,6 +11,7 @@ public final class ConfigManager {
     private static final TestConfig CONFIG = loadConfig();
 
     private ConfigManager() {
+
     }
 
     public static TestConfig getConfig() {
