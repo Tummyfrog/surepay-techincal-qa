@@ -18,6 +18,7 @@ public class PostsClient extends BaseClient {
         List<Post> posts = JsonUtils.fromJsonList(response.asString(), Post.class);
 
         PostsAssertions.assertPostTitleNotEmpty(posts);
+        PostsAssertions.assertNoDuplicatePosts(posts);
         return posts;
     }
 
